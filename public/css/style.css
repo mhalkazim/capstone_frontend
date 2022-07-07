@@ -103,6 +103,8 @@ ul, ol {
   -webkit-transition: 0.2s all;
   transition: 0.2s all;
   margin-top: 7px;
+  margin-left: 5px;
+  margin-right: 5px;
   
 }
 

@@ -6,7 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 
-function Header() {
+function LoggedInHeader() {
 
   const primaryStyleButton = {
     displayPrint: 'inline-block',
@@ -61,13 +61,9 @@ function Header() {
     width: '100%',
   }
 
-  const [auth, setAuth] = React.useState(false);
+  const [auth, setAuth] = React.useState(true);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
-
-  const handleChange = (event) => {
-    setAuth(!auth);
-  };
   
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -116,18 +112,6 @@ function Header() {
             {/* <!-- /NAV --> */}
           </div>
           {/* <!-- /responsive-nav --> */}
-          {!auth && (
-          <div className="pull-right">
-            <Button to="/login" component={ReactLink} onClick={handleChange} disableRipple={true} sx={primaryStyleButton}>
-              Login
-            </Button>
-            <Button to="/signup" component={ReactLink} disableRipple={true} sx={secondaryStyleButton}>
-              Signup
-            </Button>
-          </div>
-          )}
-
-          {auth && (
           <div className="pull-right">
             <IconButton
                 size="large"
@@ -157,7 +141,7 @@ function Header() {
                 
                 
               >
-                {
+                {auth && (
                     [
                         {
                             'text': 'Edit Details',
@@ -171,7 +155,7 @@ function Header() {
                         
                         {
                             'text': 'Sign out',
-                            'path': '/',
+                            'path': '/'
                         }
                     ]
                     .map(
@@ -183,24 +167,17 @@ function Header() {
                                         fontSize: '17px', 
                                         minWidth: '150px',
                                     }} 
-                                onClick= {function(event){
-                                  handleClose()
-                                  if(obj.text == 'Sign out'){
-                                    handleChange()
-                                  }
-                                }}
+                                onClick={handleClose}
                             >
                                 {obj.text}
                             </MenuItem>
 
                         )
                     )
-                
+                )
                 }
             </Menu>
           </div>
-          )}
-
         </div>
         {/* <!-- /container --> */}
       </nav>
@@ -247,4 +224,4 @@ function Header() {
     // <!-- /HEADER -->
   );
 }
-export default Header;
+export default LoggedInHeader;
