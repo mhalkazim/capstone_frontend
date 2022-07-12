@@ -114,7 +114,7 @@ export default function UsersLoginScreen() {
                 // )
                 setState("successful");
             } 
-            else if (theJson.message === "Wrong email or password") {
+            else if (theJson.status === "Wrong email or password") {
                 setState("validation error");
             } 
             else {
@@ -163,7 +163,11 @@ export default function UsersLoginScreen() {
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
-              inputRef={ (value)=>emailField = value }
+              inputRef={ 
+                function(htmlElement){
+                    emailField = htmlElement
+                }
+              } 
               margin="normal"
               required
               fullWidth
@@ -174,7 +178,11 @@ export default function UsersLoginScreen() {
               autoFocus
             />
             <TextField
-              inputRef={ (value)=>passwordField = value }
+              inputRef={ 
+                function(htmlElement){
+                    passwordField = htmlElement
+                }
+              }
               margin="normal"
               required
               fullWidth
