@@ -188,6 +188,7 @@ export default function UsersLoginScreen() {
 
             { state != "sending" && 
                 <Button
+                onClick={login}
                 style={{fontWeight: '700'}}
                 color="primary"
                 type="submit"
