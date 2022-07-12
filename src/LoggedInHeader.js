@@ -112,6 +112,7 @@ function LoggedInHeader() {
             {/* <!-- /NAV --> */}
           </div>
           {/* <!-- /responsive-nav --> */}
+          {auth && (
           <div className="pull-right">
             <IconButton
                 size="large"
@@ -141,7 +142,7 @@ function LoggedInHeader() {
                 
                 
               >
-                {auth && (
+                {
                     [
                         {
                             'text': 'Edit Details',
@@ -174,10 +175,11 @@ function LoggedInHeader() {
 
                         )
                     )
-                )
+                
                 }
             </Menu>
           </div>
+          )}
         </div>
         {/* <!-- /container --> */}
       </nav>
