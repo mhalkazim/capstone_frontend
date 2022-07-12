@@ -163,6 +163,7 @@ export default function UsersLoginScreen() {
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
+              ref={ (elem)=>emailField = elem }
               margin="normal"
               required
               fullWidth
@@ -173,6 +174,7 @@ export default function UsersLoginScreen() {
               autoFocus
             />
             <TextField
+              ref={ (elem)=>passwordField = elem }
               margin="normal"
               required
               fullWidth
