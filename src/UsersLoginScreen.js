@@ -75,7 +75,7 @@ export default function UsersLoginScreen() {
     // If input is invalid
     if(errors.length > 0) {
         // show error
-        setState("validation error");
+        setState("unvalid");
         setErrorState(errors);
     }
     // Else,
@@ -163,7 +163,7 @@ export default function UsersLoginScreen() {
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
-              ref={ (elem)=>emailField = elem }
+              inputRef={ (value)=>emailField = value }
               margin="normal"
               required
               fullWidth
@@ -174,7 +174,7 @@ export default function UsersLoginScreen() {
               autoFocus
             />
             <TextField
-              ref={ (elem)=>passwordField = elem }
+              inputRef={ (value)=>passwordField = value }
               margin="normal"
               required
               fullWidth
@@ -224,7 +224,12 @@ export default function UsersLoginScreen() {
 
             {
               state === "unsuccessful" &&
-              <Alert severity="error">Internal erro. Please try agian later</Alert>
+              <Alert severity="error">Internal error. Please try agian later</Alert>
+            }
+
+            {
+                state === "unvalid" &&
+                <Alert severity="error">Please enter a valid email address or password</Alert>
             }
 
 
