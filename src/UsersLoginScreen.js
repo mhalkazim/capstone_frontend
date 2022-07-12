@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
+import Alert from '@mui/material/Alert';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
+import CircularProgress from '@mui/material/CircularProgress';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
@@ -41,6 +43,96 @@ const theme = createTheme({
 });
 
 export default function UsersLoginScreen() {
+
+    /*
+  * ------------------------------------------------------------------------------------
+  * Start of Login Procedures
+  * ------------------------------------------------------------------------------------
+  */
+
+  let [state, setState] = useState("");
+  let [errorState, setErrorState] = useState([]);
+
+  // Declare undefined variables for later assignment (ref props)
+  let emailField;
+  let passwordField;
+
+  // To instantiate a FormData object
+  const formData = new FormData();
+
+  function login() {
+
+    // Validate the input
+    const errors = [];
+
+    if(emailField.value.length === 0) {
+        errors.push("Please enter a valid email address");
+    }
+    if(passwordField.value.length === 0) {
+        errors.push("Please enter a valid password");
+    }
+
+    // If input is invalid
+    if(errors.length > 0) {
+        // show error
+        setState("validation error");
+        setErrorState(errors);
+    }
+    // Else,
+    else {
+        setState("sending");
+        setErrorState([]);
+
+        formData.append('email', emailField.value);
+        formData.append('password', passwordField.value);
+        // fetch (POST)
+        fetch(`http://localhost:3011/user/login`, {
+            method: 'POST',
+            // headers: {"Content-Type": "application/json"},
+            body: formData
+        })
+        // use .json() to convert from string to json
+        .then(
+            function (backendResponse) {
+                return backendResponse.json();
+            }
+        )
+        // store jwt in the browser (user's disk)
+        .then((theJson)=>{
+
+            if(theJson.message.email) {
+                // setUserState(
+                //     {
+                //         jsonwebtoken: theJson.message.jsonwebtoken,
+                //         firstName: theJson.message.firstName,
+                //         lastName: theJson.message.lastName,
+                //         email: theJson.message.email,
+                //         avatar: theJson.message.avatar,
+                //         loginStatus: true
+                //     }
+                // )
+                setState("successful");
+            } 
+            else if (theJson.message === "Wrong email or password") {
+                setState("validation error");
+            } 
+            else {
+                setState("unsuccessful");
+            }
+        })
+        .catch((error)=>{
+            console.log(error);
+            setState("unsuccessful");
+        });
+    }
+  }
+
+  /*
+  * ------------------------------------------------------------------------------------
+  * End of Login Procedures
+  * ------------------------------------------------------------------------------------
+  */
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -93,16 +185,35 @@ export default function UsersLoginScreen() {
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
             />
-            <Button
-              style={{fontWeight: '700'}}
-              color="primary"
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Sign In
-            </Button>
+
+            { state != "sending" && 
+                <Button
+                style={{fontWeight: '700'}}
+                color="primary"
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+                >
+                Sign In
+                </Button>
+            }
+
+            {
+              state === "sending" &&
+              <Box my={3}>
+                <center>
+                  <CircularProgress size={48} />
+                </center>
+              </Box>
+            }
+
+            {
+              state === "validation error" &&
+              <Alert severity="error">Incorrect username or password</Alert>
+            }
+
+
             <Grid container>
               <Grid item xs>
                 <Link href="#" variant="body2" color="secondary">
@@ -110,9 +221,9 @@ export default function UsersLoginScreen() {
                 </Link>
               </Grid>
               <Grid item>
-                <ReactLink to="/signup" variant="body2" color="secondary">
-                  {"Don't have an account? Sign Up"}
-                </ReactLink>
+                <Link to="/signup" component={ReactLink} variant="body2" color="secondary">
+                  Don't have an account? Sign Up
+                </Link>
               </Grid>
             </Grid>
           </Box>
