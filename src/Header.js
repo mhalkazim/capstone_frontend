@@ -185,7 +185,7 @@ function Header() {
                                     }} 
                                 onClick= {function(event){
                                   handleClose()
-                                  if(obj.text == 'Sign out'){
+                                  if(obj.text === 'Sign out'){
                                     handleChange()
                                   }
                                 }}

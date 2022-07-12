@@ -186,7 +186,7 @@ export default function UsersLoginScreen() {
               label="Remember me"
             />
 
-            { state != "sending" && 
+            { state !== "sending" && 
                 <Button
                 onClick={login}
                 style={{fontWeight: '700'}}
