@@ -86,7 +86,7 @@ export default function UsersLoginScreen() {
         formData.append('email', emailField.value);
         formData.append('password', passwordField.value);
         // fetch (POST)
-        fetch(`${process.env.REACT_APP_BACKEND}/users/login`, {
+        fetch(`${process.env.REACT_APP_BACKEND_ENDPOINT}/users/login`, {
             method: 'POST',
             // headers: {"Content-Type": "application/json"},
             body: formData
