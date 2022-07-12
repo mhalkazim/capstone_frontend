@@ -50,7 +50,7 @@ export default function UsersLoginScreen() {
   * ------------------------------------------------------------------------------------
   */
 
-  let [state, setState] = useState("");
+  let [state, setState] = useState("initial");
   let [errorState, setErrorState] = useState([]);
 
   // Declare undefined variables for later assignment (ref props)
@@ -86,7 +86,7 @@ export default function UsersLoginScreen() {
         formData.append('email', emailField.value);
         formData.append('password', passwordField.value);
         // fetch (POST)
-        fetch(`http://localhost:3011/user/login`, {
+        fetch(`${process.env.REACT_APP_BACKEND}/users/login`, {
             method: 'POST',
             // headers: {"Content-Type": "application/json"},
             body: formData
@@ -99,6 +99,7 @@ export default function UsersLoginScreen() {
         )
         // store jwt in the browser (user's disk)
         .then((theJson)=>{
+            console.log(theJson)
 
             if(theJson.message.email) {
                 // setUserState(
@@ -186,7 +187,7 @@ export default function UsersLoginScreen() {
               label="Remember me"
             />
 
-            { state !== "sending" && 
+            { state !== "sending" && state !== "successful" &&
                 <Button
                 onClick={login}
                 style={{fontWeight: '700'}}
@@ -213,6 +214,17 @@ export default function UsersLoginScreen() {
               state === "validation error" &&
               <Alert severity="error">Incorrect username or password</Alert>
             }
+
+            {
+              state === "successful" &&
+              <Alert severity="success">You have logged in successfuly</Alert>
+            }
+
+            {
+              state === "unsuccessful" &&
+              <Alert severity="error">Internal erro. Please try agian later</Alert>
+            }
+
 
 
             <Grid container>
