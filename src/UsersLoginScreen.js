@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -15,6 +15,8 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Link as ReactLink } from 'react-router-dom';
+import { Redirect } from 'react-router';
+import { UserContext } from './UserContext.js';
 
 function Copyright(props) {
   return (
@@ -50,8 +52,9 @@ export default function UsersLoginScreen() {
   * ------------------------------------------------------------------------------------
   */
 
-  let [state, setState] = useState("initial");
+  const [state, setState] = useState("initial");
   let [errorState, setErrorState] = useState([]);
+  const { updateUser } = useContext(UserContext);
 
   // Declare undefined variables for later assignment (ref props)
   let emailField;
@@ -85,11 +88,15 @@ export default function UsersLoginScreen() {
 
         formData.append('email', emailField.value);
         formData.append('password', passwordField.value);
+
         // fetch (POST)
-        fetch(`${process.env.REACT_APP_BACKEND_ENDPOINT}/users/login`, {
+        fetch(`${process.env.REACT_APP_BACKEND_ENDPOINT}/user/login`, {
             method: 'POST',
             // headers: {"Content-Type": "application/json"},
-            body: formData
+            body: formData,
+            // headers:{
+            //     "Content-Type": "application/form-data"
+            // }
         })
         // use .json() to convert from string to json
         .then(
@@ -102,19 +109,21 @@ export default function UsersLoginScreen() {
             console.log(theJson)
 
             if(theJson.message.email) {
-                // setUserState(
-                //     {
-                //         jsonwebtoken: theJson.message.jsonwebtoken,
-                //         firstName: theJson.message.firstName,
-                //         lastName: theJson.message.lastName,
-                //         email: theJson.message.email,
-                //         avatar: theJson.message.avatar,
-                //         loginStatus: true
-                //     }
-                // )
+                updateUser(
+                    {
+                        jsonwebtoken: theJson.message.jsonwebtoken,
+                        firstname: theJson.message.firstname,
+                        lastname: theJson.message.lastname,
+                        email: theJson.message.email,
+                        avatar: theJson.message.avatar,
+                        phonenumber: theJson.message.phonenumber,
+                        address: theJson.message.address,
+                        loginStatus: true
+                    }
+                )
                 setState("successful");
             } 
-            else if (theJson.status === "Wrong email or password") {
+            else if (theJson.message === "Wrong email or password") {
                 setState("validation error");
             } 
             else {
@@ -143,6 +152,19 @@ export default function UsersLoginScreen() {
     });
   };
 
+  if(localStorage.getItem("email"))
+  {
+    return(
+        <Redirect to ="/" />
+    )
+  }
+
+  if(state==="successful"){
+    return(
+        <Redirect to="/" />
+    )
+  }
+  else{
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -260,4 +282,5 @@ export default function UsersLoginScreen() {
       </Container>
     </ThemeProvider>
   );
+}
 }

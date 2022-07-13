@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState, useContext } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
+import Alert from '@mui/material/Alert';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
+import CircularProgress from '@mui/material/CircularProgress';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
@@ -13,6 +15,8 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Link as ReactLink } from 'react-router-dom';
+import { Redirect } from 'react-router';
+
 
 function Copyright(props) {
   return (
@@ -41,6 +45,104 @@ const theme = createTheme({
 });
 
 export default function UsersChangePassword() {
+
+
+    /*
+  * ------------------------------------------------------------------------------------
+  * Start of Login Procedures
+  * ------------------------------------------------------------------------------------
+  */
+
+  const [state, setState] = useState("initial");
+  let [errorState, setErrorState] = useState([]);
+ 
+
+  // Declare undefined variables for later assignment (ref props)
+  let emailField;
+  let oldpasswordField;
+  let newpasswordField;
+  let confirmpasswordField;
+
+
+  // To instantiate a FormData object
+  const formData = new FormData();
+
+  function changePassword() {
+
+    // Validate the input
+    const errors = [];
+    emailField = localStorage.getItem("email");
+
+    if(oldpasswordField.value.length === 0) {
+        errors.push("Please enter a valid old password");
+    }
+    if(newpasswordField.value.length === 0) {
+        errors.push("Please enter a valid new password");
+    }
+    if(confirmpasswordField.value.length === 0) {
+        errors.push("Please confirm your password");
+    }
+
+    // If input is invalid
+    if(errors.length > 0) {
+        // show error
+        setState("unvalid");
+        setErrorState(errors);
+    }
+    else if(confirmpasswordField.value !== newpasswordField.value)
+    {
+        setState("mismatch");
+    }
+    // Else,
+    else {
+        setState("sending");
+        setErrorState([]);
+        
+        formData.append('email', emailField)
+        formData.append('oldpassword', oldpasswordField.value)
+        formData.append('newpassword', newpasswordField.value);
+
+        // fetch (POST)
+        fetch(`${process.env.REACT_APP_BACKEND_ENDPOINT}/user/changepassword`, {
+            method: 'POST',
+            // headers: {"Content-Type": "application/json"},
+            body: formData,
+            // headers:{
+            //     "Content-Type": "application/form-data"
+            // }
+        })
+        // use .json() to convert from string to json
+        .then(
+            function (backendResponse) {
+                return backendResponse.json();
+            }
+        )
+        // store jwt in the browser (user's disk)
+        .then((theJson)=>{
+            console.log(theJson)
+
+            if(theJson.message.email) {
+                setState("successful");
+            } 
+            else {
+                setState("unsuccessful");
+            }
+        })
+        .catch((error)=>{
+            console.log(error);
+            setState("unsuccessful");
+        });
+    }
+  }
+
+  /*
+  * ------------------------------------------------------------------------------------
+  * End of Login Procedures
+  * ------------------------------------------------------------------------------------
+  */
+
+
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -50,6 +152,20 @@ export default function UsersChangePassword() {
     });
   };
 
+  if(!localStorage.getItem("email"))
+  {
+    return(
+        <Redirect to ="/" />
+    )
+  }
+
+  if(state==="successful"){
+    return(
+        <Redirect to="/" />
+    )
+  }
+  
+  else{
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -70,8 +186,30 @@ export default function UsersChangePassword() {
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
+
+                <Grid item xs={12}>
+                <TextField
+                  inputRef={ 
+                    function(htmlElement){
+                        oldpasswordField = htmlElement
+                    }
+                  } 
+                  required
+                  fullWidth
+                  name="oldpassword"
+                  label="Old Password"
+                  type="password"
+                  id="oldpassword"
+                  autoComplete="old-password"
+                />
+              </Grid>
               <Grid item xs={12}>
                 <TextField
+                  inputRef={ 
+                    function(htmlElement){
+                        newpasswordField = htmlElement
+                    }
+                  } 
                   required
                   fullWidth
                   name="password"
@@ -83,6 +221,11 @@ export default function UsersChangePassword() {
               </Grid>
               <Grid item xs={12}>
                 <TextField
+                  inputRef={ 
+                    function(htmlElement){
+                        confirmpasswordField = htmlElement
+                    }
+                  } 
                   required
                   fullWidth
                   name="confirmPassword"
@@ -93,7 +236,10 @@ export default function UsersChangePassword() {
                 />
               </Grid>
             </Grid>
-            <Button
+
+            { state !== "sending" && state !== "successful" &&
+                <Button
+              onClick={changePassword}
               style={{fontWeight: '700'}}
               color="primary"
               type="submit"
@@ -103,10 +249,54 @@ export default function UsersChangePassword() {
             >
               Save New Password
             </Button>
+            }
+
+            {
+              state === "sending" &&
+              <Box my={3}>
+                <center>
+                  <CircularProgress size={48} />
+                </center>
+              </Box>
+            }
+
+            {
+                state === "unvalid" &&
+                <Box>
+
+                    <ul>
+                        {
+                            errorState.map(
+                                (error) => {
+                                    return <Alert severity="error">{error}</Alert>
+                                }
+                            )
+                        }
+                    </ul>
+
+                </Box>
+            }   
+
+            {
+              state === "unsuccessful" &&
+              <Alert severity="error">Internal error. Please try agian later</Alert>
+            }
+
+            {  
+              state === "successful" &&
+              <Alert severity="success">You have signed up successfuly</Alert>
+            }
+
+{  
+              state === "mismatch" &&
+              <Alert severity="error">Passwords aren't matching, please try again</Alert>
+            }
+
           </Box>
         </Box>
         <Copyright sx={{ mt: 5 }} />
       </Container>
     </ThemeProvider>
   );
+}
 }

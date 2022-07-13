@@ -1,12 +1,18 @@
 import { Link as ReactLink } from 'react-router-dom';
-import React, { useState } from 'react';
+import React, { useState, useContext} from 'react';
 import Button from '@mui/material/Button';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import { UserContext } from './UserContext.js';
 
 function Header() {
+
+
+  const { updateUser } = useContext(UserContext);
+
+
 
   const primaryStyleButton = {
     displayPrint: 'inline-block',
@@ -61,13 +67,10 @@ function Header() {
     width: '100%',
   }
 
-  const [auth, setAuth] = React.useState(false);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
 
-  const handleChange = (event) => {
-    setAuth(!auth);
-  };
+ 
   
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -116,9 +119,9 @@ function Header() {
             {/* <!-- /NAV --> */}
           </div>
           {/* <!-- /responsive-nav --> */}
-          {!auth && (
+          {!localStorage.getItem("jsonwebtoken") && (
           <div className="pull-right">
-            <Button to="/login" component={ReactLink} onClick={handleChange} disableRipple={true} sx={primaryStyleButton}>
+            <Button to="/login" component={ReactLink} disableRipple={true} sx={primaryStyleButton}>
               Login
             </Button>
             <Button to="/signup" component={ReactLink} disableRipple={true} sx={secondaryStyleButton}>
@@ -127,7 +130,7 @@ function Header() {
           </div>
           )}
 
-          {auth && (
+          {localStorage.getItem("jsonwebtoken") && (
           <div className="pull-right">
             <IconButton
                 size="large"
@@ -186,7 +189,11 @@ function Header() {
                                 onClick= {function(event){
                                   handleClose()
                                   if(obj.text === 'Sign out'){
-                                    handleChange()
+                                    updateUser(
+                                      {
+                                        loginStatus: false
+                                      }
+                                    )
                                   }
                                 }}
                             >
