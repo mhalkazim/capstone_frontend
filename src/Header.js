@@ -100,7 +100,7 @@ function Header() {
                 </ReactLink>
               </li>
               <li>
-                <ReactLink to="">
+                <ReactLink to="/product-register">
                   <strong>List My Item</strong>
                 </ReactLink>
               </li>
@@ -181,6 +181,11 @@ function Header() {
                         {
                             'text': 'Change Password',
                             'path': '/edit-password-users'
+                        },
+
+                        {
+                          'text': 'Edit product deatils',
+                          'path': '/product-update'
                         },
                         
                         {

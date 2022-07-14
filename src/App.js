@@ -7,6 +7,8 @@ import UsersSignupScreen from './UsersSignupScreen.js'
 import UsersEditDetails from './UsersEditDetails.js'
 import UsersChangePassword from './UsersChangePassword.js'
 import ProfileScreen from './ProfileScreen.js'
+import ProductRegistration from './ProductRegistration.js'
+import ProductEditDetails from './ProductEditDetails.js'
 
 const theme = createTheme(
   {
@@ -27,6 +29,8 @@ function App() {
           <LayoutRoute path="/edit-users" exact={true} component={UsersEditDetails} />
           <LayoutRoute path="/edit-password-users" exact={true} component={UsersChangePassword} />
           <LayoutRoute path="/profile-page" exact={true} component={ProfileScreen} />
+          <LayoutRoute path="/product-register" exact={true} component={ProductRegistration} />
+          <LayoutRoute path="/product-update" exact={true} component={ProductEditDetails} />
         </Switch>
       </BrowserRouter>
     </ThemeProvider>
