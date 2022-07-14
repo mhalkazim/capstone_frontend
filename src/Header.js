@@ -3,6 +3,7 @@ import React, { useState, useContext} from 'react';
 import Button from '@mui/material/Button';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import IconButton from '@mui/material/IconButton';
+import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { UserContext } from './UserContext.js';
@@ -10,8 +11,8 @@ import { UserContext } from './UserContext.js';
 function Header() {
 
 
-  const { updateUser } = useContext(UserContext);
-
+  const { updateUser, state} = useContext(UserContext);
+  const { firstname, lastname, email, phonenumber, address, avatar} = state;
 
 
   const primaryStyleButton = {
@@ -140,7 +141,13 @@ function Header() {
                 aria-haspopup="true"
                 onClick={handleMenu}
               >
-                <AccountCircle sx={{ fontSize: '35px', color: '#FFFFFF'}} />
+                { avatar === "undefined" &&
+                  <AccountCircle sx={{ fontSize: '35px', color: '#FFFFFF'}} />
+                }
+
+                { avatar !== "undefined" &&
+                  <Avatar sx={{ width: 35, height: 35}} src={avatar} />
+                }
             </IconButton>
 
             <Menu
@@ -162,6 +169,10 @@ function Header() {
               >
                 {
                     [
+                      {
+                        'text': 'Profile Page',
+                        'path': '/profile-page'
+                      },
                         {
                             'text': 'Edit Details',
                             'path': '/edit-users'

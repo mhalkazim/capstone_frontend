@@ -134,7 +134,8 @@ export default function UsersSignupScreen() {
         formData.append('address', addressField.value);
 
         // fetch (POST)
-        fetch(`http://localhost:3011/user/registration`, {
+        fetch(`${process.env.REACT_APP_BACKEND_ENDPOINT}/user/registration`, 
+        {
             method: 'POST',
             // headers: {"Content-Type": "application/json"},
             body: formData,
@@ -198,13 +199,13 @@ export default function UsersSignupScreen() {
   if(localStorage.getItem("email"))
   {
     return(
-        <Redirect to ="/" />
+        <Redirect to ="/profile-page" />
     )
   }
 
   if(state==="successful"){
     return(
-        <Redirect to="/" />
+        <Redirect to="/profile-page" />
     )
   }
 

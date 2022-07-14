@@ -161,7 +161,7 @@ export default function UsersChangePassword() {
 
   if(state==="successful"){
     return(
-        <Redirect to="/" />
+        <Redirect to="/profile-page" />
     )
   }
   
@@ -287,7 +287,7 @@ export default function UsersChangePassword() {
               <Alert severity="success">You have signed up successfuly</Alert>
             }
 
-{  
+            {  
               state === "mismatch" &&
               <Alert severity="error">Passwords aren't matching, please try again</Alert>
             }

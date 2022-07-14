@@ -155,13 +155,13 @@ export default function UsersLoginScreen() {
   if(localStorage.getItem("email"))
   {
     return(
-        <Redirect to ="/" />
+        <Redirect to ="/profile-page" />
     )
   }
 
   if(state==="successful"){
     return(
-        <Redirect to="/" />
+        <Redirect to="/profile-page" />
     )
   }
   else{

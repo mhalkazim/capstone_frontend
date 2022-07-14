@@ -180,7 +180,7 @@ export default function UsersEditDetails() {
   if(!localStorage.getItem("email"))
   {
     return(
-        <Redirect to ="/" />
+        <Redirect to ="/profile-page" />
     )
   }
 
